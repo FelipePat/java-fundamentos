@@ -15,29 +15,14 @@ public class SistemaGestaoRestaurante {
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
 
-            opcao = scanner.nextInt();
-            scanner.nextLine(); // limpar buffer
+            opcao = lerInt(scanner);
 
             switch (opcao) {
-
-                case 1:
-                    calcularPrecoVenda(scanner);
-                    break;
-
-                case 2:
-                    calcularReceita(scanner);
-                    break;
-
-                case 3:
-                    calcularLucro(scanner);
-                    break;
-
-                case 0:
-                    System.out.println("Encerrando sistema...");
-                    break;
-
-                default:
-                    System.out.println("Opção inválida.");
+                case 1 -> calcularPrecoVenda(scanner);
+                case 2 -> calcularReceita(scanner);
+                case 3 -> calcularLucro(scanner);
+                case 0 -> System.out.println("Encerrando sistema...");
+                default -> System.out.println("Opção inválida.");
             }
 
         } while (opcao != 0);
@@ -45,17 +30,14 @@ public class SistemaGestaoRestaurante {
         scanner.close();
     }
 
-    // ================= MÉTODOS =================
+    // ================= MÉTODOS DE NEGÓCIO =================
 
     public static void calcularPrecoVenda(Scanner scanner) {
         System.out.print("Produto: ");
         String produto = scanner.nextLine();
 
-        System.out.print("Preço de custo (R$): ");
-        double custo = scanner.nextDouble();
-
-        System.out.print("Lucro desejado (%): ");
-        double margem = scanner.nextDouble();
+        double custo = lerDoublePositivo(scanner, "Preço de custo (R$): ");
+        double margem = lerDoublePositivo(scanner, "Lucro desejado (%): ");
 
         double precoVenda = custo + (custo * margem / 100);
 
@@ -66,31 +48,65 @@ public class SistemaGestaoRestaurante {
     }
 
     public static void calcularReceita(Scanner scanner) {
-        System.out.print("Preço de venda unitário (R$): ");
-        double preco = scanner.nextDouble();
-
-        System.out.print("Quantidade vendida: ");
-        int quantidade = scanner.nextInt();
+        double preco = lerDoublePositivo(scanner, "Preço de venda unitário (R$): ");
+        int quantidade = lerIntPositivo(scanner, "Quantidade vendida: ");
 
         double receita = preco * quantidade;
-
         System.out.printf("Receita total: R$ %.2f%n", receita);
     }
 
     public static void calcularLucro(Scanner scanner) {
-        System.out.print("Preço de custo unitário (R$): ");
-        double custo = scanner.nextDouble();
-
-        System.out.print("Preço de venda unitário (R$): ");
-        double venda = scanner.nextDouble();
-
-        System.out.print("Quantidade vendida: ");
-        int quantidade = scanner.nextInt();
+        double custo = lerDoublePositivo(scanner, "Preço de custo unitário (R$): ");
+        double venda = lerDoublePositivo(scanner, "Preço de venda unitário (R$): ");
+        int quantidade = lerIntPositivo(scanner, "Quantidade vendida: ");
 
         double receita = venda * quantidade;
         double custoTotal = custo * quantidade;
         double lucro = receita - custoTotal;
 
         System.out.printf("Lucro líquido total: R$ %.2f%n", lucro);
+    }
+
+    // ================= VALIDAÇÕES =================
+
+    public static double lerDoublePositivo(Scanner scanner, String mensagem) {
+        double valor;
+        do {
+            System.out.print(mensagem);
+            valor = scanner.nextDouble();
+            scanner.nextLine(); // limpar buffer
+
+            if (valor <= 0) {
+                System.out.println("Valor inválido. Digite um número maior que zero.");
+            }
+        } while (valor <= 0);
+
+        return valor;
+    }
+
+    public static int lerIntPositivo(Scanner scanner, String mensagem) {
+        int valor;
+        do {
+            System.out.print(mensagem);
+            valor = scanner.nextInt();
+            scanner.nextLine(); // limpar buffer
+
+            if (valor <= 0) {
+                System.out.println("Valor inválido. Digite um número inteiro maior que zero.");
+            }
+        } while (valor <= 0);
+
+        return valor;
+    }
+
+    public static int lerInt(Scanner scanner) {
+        int valor;
+        while (!scanner.hasNextInt()) {
+            System.out.print("Digite um número válido: ");
+            scanner.next();
+        }
+        valor = scanner.nextInt();
+        scanner.nextLine(); // limpar buffer
+        return valor;
     }
 }
